@@ -17,7 +17,16 @@ final class ClockTower
   }
 
   private function sumBellsByHours(int $a, int $b) {
-    return $a + $b;
+    return $this->setBellsForHour($a) + $this->setBellsForHour($b);
+  }
+
+  private function setBellsForHour($hour) {
+    $hourMod = $hour % 12;
+    if ($hourMod == 0) {
+      return 12;
+    } else {
+      return $hourMod;
+    }
   }
 
   private function getHour(string $timeStr): int
