@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+ini_set('display_errors', 'On');
 
 final class ClockTower
 {
@@ -8,19 +9,24 @@ final class ClockTower
     $startHour = $this->getHour($startTimeStr);
     $endHour = $this->getHour($endTimeStr);
     if ($startHour >= 0 && $endHour >= 0) {
-      return $endHour - $startHour;
+      $hoursArray = range($startHour, $endHour);
+      return array_reduce($hoursArray, array($this, 'sumBellsByHours'), 0);
     } else {
       return -1;
     }
   }
 
+  private function sumBellsByHours(int $a, int $b) {
+    return $a + $b;
+  }
+
   private function getHour(string $timeStr): int
   {
     $timeNums = explode(':', $timeStr, 2);
-    if ($timeNums.length == 2 && is_int($timeNums[0])) {
-      return (int)$hour;
+    if ( count($timeNums) === 2 && preg_match('/^\d+$/', $timeNums[0]) ) {
+      return (int)$timeNums[0];
     } else {
-      return -1;
+      return -2;
     }
   }
 }
