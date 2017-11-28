@@ -8,8 +8,14 @@ final class ClockTower
   public function countBells(string $startTimeStr, string $endTimeStr): int {
     $startHour = $this->getHour($startTimeStr, TRUE);
     $endHour = $this->getHour($endTimeStr, FALSE);
+    if ($endHour < $startHour) {
+      $endHour += 24;
+    } else if ($endHour == $startHour && $endTimeStr === $startTimeStr) {
+      $endHour += 24;
+    }
     if ($startHour >= 0 && $endHour >= 0) {
       $hoursArray = range($startHour, $endHour);
+      // any other way to handle reduce of single element array?
       if (count($hoursArray) === 1) {
         return $this->setBellsForHour($hoursArray[0]);
       } else {
@@ -20,13 +26,14 @@ final class ClockTower
     }
   }
 
+  // make this an inline function ?
   private function sumBellsByHours(int $a, int $b) {
-    return $this->setBellsForHour($a) + $this->setBellsForHour($b);
+    return $a + $this->setBellsForHour($b);
   }
 
   private function setBellsForHour($hour) {
     $hourMod = $hour % 12;
-    if ($hourMod == 0) {
+    if ($hourMod === 0) {
       return 12;
     } else {
       return $hourMod;
@@ -40,6 +47,7 @@ final class ClockTower
       preg_match('/^\d+$/', $timeNums[0]) &&
       preg_match('/^\d+$/', $timeNums[1])
     ) {
+      // refactor this
       if ( (int)$timeNums[1] === 0) {
         return (int)$timeNums[0];
       } else if ($isStartTime) {

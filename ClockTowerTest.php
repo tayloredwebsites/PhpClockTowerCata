@@ -49,4 +49,14 @@ final class ClockTowerTest extends TestCase
     );
   }
 
+  public function testTwentyThreeToOneIsTwentyFour(): void
+  {
+    $clockTowerObj = new ClockTower();
+    // echo ("testTwentyThreeToOneIsTwentyFour: " . $clockTowerObj->countBells('23:00', '1:00') . "\n");
+    $this->assertEquals(
+        24,
+        $clockTowerObj->countBells('23:00', '1:00')
+    );
+  }
+
 }
