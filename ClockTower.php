@@ -6,11 +6,15 @@ final class ClockTower
 {
 
   public function countBells(string $startTimeStr, string $endTimeStr): int {
-    $startHour = $this->getHour($startTimeStr);
-    $endHour = $this->getHour($endTimeStr);
+    $startHour = $this->getHour($startTimeStr, TRUE);
+    $endHour = $this->getHour($endTimeStr, FALSE);
     if ($startHour >= 0 && $endHour >= 0) {
       $hoursArray = range($startHour, $endHour);
-      return array_reduce($hoursArray, array($this, 'sumBellsByHours'), 0);
+      if (count($hoursArray) === 1) {
+        return $this->setBellsForHour($hoursArray[0]);
+      } else {
+        return array_reduce($hoursArray, array($this, 'sumBellsByHours'), 0);
+      }
     } else {
       return -1;
     }
@@ -29,11 +33,20 @@ final class ClockTower
     }
   }
 
-  private function getHour(string $timeStr): int
+  private function getHour(string $timeStr, bool $isStartTime): int
   {
     $timeNums = explode(':', $timeStr, 2);
-    if ( count($timeNums) === 2 && preg_match('/^\d+$/', $timeNums[0]) ) {
-      return (int)$timeNums[0];
+    if ( count($timeNums) === 2 &&
+      preg_match('/^\d+$/', $timeNums[0]) &&
+      preg_match('/^\d+$/', $timeNums[1])
+    ) {
+      if ( (int)$timeNums[1] === 0) {
+        return (int)$timeNums[0];
+      } else if ($isStartTime) {
+        return (int)$timeNums[0] + 1;
+      } else {
+        return (int)$timeNums[0];
+      }
     } else {
       return -2;
     }
